@@ -1,6 +1,7 @@
-#!/usr/bin/env bash
-# Custom client configuration file
-Host 98.98.98.98
+# SSH Config File
+#
+Host web-01
+	Hostname 35.243.128.200
 	User ubuntu
-	IdentityFile ~/.ssh/holberton
-	BatchMode yes
+	PasswordAuthentication no
+	IdentityFile ~/.ssh/school

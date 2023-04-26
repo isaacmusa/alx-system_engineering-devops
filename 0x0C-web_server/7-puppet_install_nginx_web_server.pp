@@ -1,4 +1,4 @@
-# Install Nginx web server with Puppet
+ Install Nginx web server with Puppet
 include stdlib
 
 $link = 'https://www.youtube.com/watch?v=QH2-TGUlwu4'

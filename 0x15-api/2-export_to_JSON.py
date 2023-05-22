@@ -1,42 +1,30 @@
 #!/usr/bin/python3
-"""Export data from an API to JSON format.
-"""
-from json import dumps
+""" Python to get data from an API and convert to Json"""
+import csv
+import json
 import requests
-from sys import argv
+import sys
+
 
 if __name__ == '__main__':
-    # Checks if the argument can be converted to a number
-    try:
-        emp_id = int(argv[1])
-    except ValueError:
-        exit()
+    USER_ID = sys.argv[1]
+    url_to_user = 'https://jsonplaceholder.typicode.com/users/' + USER_ID
+    res = requests.get(url_to_user)
+    """Documentation"""
+    USERNAME = res.json().get('username')
+    """Documentation"""
+    url_to_task = url_to_user + '/todos'
+    res = requests.get(url_to_task)
+    tasks = res.json()
 
-    # Main formatted names to API uris and filenames
-    api_url = 'https://jsonplaceholder.typicode.com'
-    user_uri = '{api}/users/{id}'.format(api=api_url, id=emp_id)
-    todo_uri = '{user_uri}/todos'.format(user_uri=user_uri)
-    filename = '{emp_id}.json'.format(emp_id=emp_id)
-
-    # User Response
-    u_res = requests.get(user_uri).json()
-
-    # User TODO Response
-    t_res = requests.get(todo_uri).json()
-
-    # A list of all tasks of an user
-    user_tasks = list()
-
-    for elem in t_res:
-        data = {
-            'task': elem.get('title'),
-            'completed': elem.get('completed'),
-            'username': u_res.get('username')
-        }
-
-        user_tasks.append(data)
-
-    # Create the new file for the user to save the information
-    # Filename example: `{user_id}.json`
-    with open(filename, 'w', encoding='utf-8') as jsonfile:
-        jsonfile.write(dumps({emp_id: user_tasks}))
+    dict_data = {USER_ID: []}
+    for task in tasks:
+        TASK_COMPLETED_STATUS = task.get('completed')
+        TASK_TITLE = task.get('title')
+        dict_data[USER_ID].append({
+                                  "task": TASK_TITLE,
+                                  "completed": TASK_COMPLETED_STATUS,
+                                  "username": USERNAME})
+    """print(dict_data)"""
+    with open('{}.json'.format(USER_ID), 'w') as f:
+        json.dump(dict_data, f)
